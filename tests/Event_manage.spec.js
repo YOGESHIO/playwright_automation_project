@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { TIMEOUT } = require('node:dns');
 
  
 test("Book Event", async ({ page }) =>
@@ -82,7 +83,7 @@ await expect(page.locator('#booking-card').getByText(eventTitle)).toBeVisible();
 await page.locator("#nav-events").click();
 await page.locator('article[data-testid="event-card"]').filter({ hasText: eventTitle }).waitFor();
 await expect(page.locator('article[data-testid="event-card"]').filter({ hasText: eventTitle })).toBeVisible();
-
+await page.waitForTimeout(4000);
 const seatsAfterBooking = await page.locator('article[data-testid="event-card"]').filter({ hasText: eventTitle }).getByText("seats available").textContent();   
 console.log(seatsAfterBooking);
 
