@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
  
-test.only("login shopping web and order zara coat 3", async ({ page }) =>
+test("login shopping web and order zara coat 3", async ({ page }) =>
 {
    const productName = 'ADIDAS ORIGINAL';
    const products = page.locator(".card-body");
@@ -36,8 +36,7 @@ test.only("login shopping web and order zara coat 3", async ({ page }) =>
          }
             
 
-
-   
+ 
       }
          await page.locator("[routerlink*='cart']").click();
          await page.locator("div li").first().waitFor();
@@ -61,12 +60,27 @@ test.only("login shopping web and order zara coat 3", async ({ page }) =>
             }
          }
 
+         expect(page.locator(".user__name [type='text']").first()).toHaveText("yogesh.dixit2012@gmail.com");
          await page.locator(".btnn").click();
          await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
-         await page.pause();              
-
-
-
+         const order_id = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+         console.log(order_id);
+         
+         await page.locator("[routerlink='/dashboard/myorders']").first().click();
+         await page.locator("tbody").waitFor();
+         const rows = await page.locator("tbody tr");
+         const rowCount = await rows.count();
+         for (let i = 0; i < rowCount; ++i)
+         {
+            const rowOrderId = await rows.nth(i).locator("th").textContent();
+            if (order_id.includes(rowOrderId)) {
+               await rows.nth(i).locator("button").first().click();
+               break;
+            }        
+         }
+         const orderIdDetails = await page.locator(".col-text").textContent();
+         expect(order_id.includes(orderIdDetails)).toBeTruthy();
+            
 
    });
 
