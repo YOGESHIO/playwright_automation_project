@@ -17,7 +17,8 @@ constructor(page)
 async searchProduct(productName)
 
 {
-   
+   // Wait for products to render before reading them; otherwise count can be 0 on slow runners (CI)
+   await this.productText.first().waitFor();
    const titles = await this.productText.allTextContents();
    console.log(titles);
    const count = await this.products.count();
